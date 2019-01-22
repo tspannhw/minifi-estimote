@@ -1,0 +1,135 @@
+MiNiFi Config Version: 3
+Flow Controller:
+  name: Beacon MiniFi 0.5
+  comment: ''
+Core Properties:
+  flow controller graceful shutdown period: 10 sec
+  flow service write delay interval: 500 ms
+  administrative yield duration: 30 sec
+  bored yield duration: 10 millis
+  max concurrent threads: 1
+  variable registry properties: ''
+FlowFile Repository:
+  partitions: 256
+  checkpoint interval: 2 mins
+  always sync: false
+  Swap:
+    threshold: 20000
+    in period: 5 sec
+    in threads: 1
+    out period: 5 sec
+    out threads: 4
+Content Repository:
+  content claim max appendable size: 10 MB
+  content claim max flow files: 100
+  always sync: false
+Provenance Repository:
+  provenance rollover time: 1 min
+  implementation: org.apache.nifi.provenance.MiNiFiPersistentProvenanceRepository
+Component Status Repository:
+  buffer size: 1440
+  snapshot frequency: 1 min
+Security Properties:
+  keystore: ''
+  keystore type: ''
+  keystore password: ''
+  key password: ''
+  truststore: ''
+  truststore type: ''
+  truststore password: ''
+  ssl protocol: ''
+  Sensitive Props:
+    key:
+    algorithm: PBEWITHMD5AND256BITAES-CBC-OPENSSL
+    provider: BC
+Processors:
+- id: 282ac0b3-ffa7-330e-0000-000000000000
+  name: ExecuteProcess
+  class: org.apache.nifi.processors.standard.ExecuteProcess
+  max concurrent tasks: 1
+  scheduling strategy: TIMER_DRIVEN
+  scheduling period: 60 sec
+  penalization period: 30 sec
+  yield period: 1 sec
+  run duration nanos: 0
+  auto-terminated relationships list:
+  - success
+  Properties:
+    Argument Delimiter: ' '
+    Batch Duration:
+    Command: /opt/demo/runbscan.sh
+    Command Arguments:
+    Redirect Error Stream: 'true'
+    Working Directory: /opt/demo
+- id: 0edeb648-d160-39a9-0000-000000000000
+  name: TailFile
+  class: org.apache.nifi.processors.standard.TailFile
+  max concurrent tasks: 1
+  scheduling strategy: TIMER_DRIVEN
+  scheduling period: 0 sec
+  penalization period: 30 sec
+  yield period: 1 sec
+  run duration nanos: 0
+  auto-terminated relationships list: []
+  Properties:
+    File Location: Local
+    File to Tail: /opt/demo/logs/estimote.log
+    Initial Start Position: Beginning of File
+    Rolling Filename Pattern:
+    tail-base-directory:
+    tail-mode: Single file
+    tailfile-lookup-frequency: 10 minutes
+    tailfile-maximum-age: 24 hours
+    tailfile-recursive-lookup: 'false'
+Controller Services: []
+Process Groups: []
+Input Ports: []
+Output Ports: []
+Funnels: []
+Connections:
+- id: 992c96fd-752d-3216-0000-000000000000
+  name: TailFile/success/77aa8d19-0168-1000-0a18-b9338b8a0b90
+  source id: 0edeb648-d160-39a9-0000-000000000000
+  source relationship names:
+  - success
+  destination id: 77aa8d19-0168-1000-0a18-b9338b8a0b90
+  max work queue size: 120000
+  max work queue data size: 1 GB
+  flowfile expiration: 0 sec
+  queue prioritizer class: ''
+Remote Process Groups:
+- id: a8050db3-6de3-3864-0000-000000000000
+  name: ''
+  url: http://hw13125.local:8080/nifi
+  comment: ''
+  timeout: 30 sec
+  yield period: 10 sec
+  transport protocol: HTTP
+  proxy host: ''
+  proxy port: ''
+  proxy user: ''
+  proxy password: ''
+  local network interface: ''
+  Input Ports:
+  - id: c93d5d44-0167-1000-dbab-290ce8a55963
+    name: Garden Input
+    comment: ''
+    max concurrent tasks: 1
+    use compression: false
+  - id: 9aa02238-d743-37b1-eaf8-6e7676b1b859
+    name: MiniFi Rainbow
+    comment: ''
+    max concurrent tasks: 1
+    use compression: false
+  - id: 0458c4ee-8778-35d7-84e9-f5d15088c7e7
+    name: Movidius Input
+    comment: ''
+    max concurrent tasks: 1
+    use compression: false
+  - id: 77aa8d19-0168-1000-0a18-b9338b8a0b90
+    name: Beacon In
+    comment: ''
+    max concurrent tasks: 1
+    use compression: false
+  Output Ports: []
+NiFi Properties Overrides: {}
