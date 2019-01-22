@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from beacontools import parse_packet
-from beacontools import IBeaconFilter
 from beacontools import BeaconScanner, EstimoteTelemetryFrameA, EstimoteTelemetryFrameB, EstimoteFilter
 import os.path
 import re
@@ -26,14 +25,6 @@ import socket
 import psutil
 ###
 
-# Add IBeacon  data
-#def callback(bt_addr, rssi, packet, additional_info):
-#    print("%s %d %s %s" % (bt_addr, rssi, packet, additional_info))
-
-# scan for all iBeacon advertisements from beacons with the specified uuid
-#scanner = BeaconScanner(callback) #,
-
-
 # yyyy-mm-dd hh:mm:ss
 currenttime= strftime("%Y-%m-%d %H:%M:%S",gmtime())
 
@@ -41,7 +32,7 @@ host = os.uname()[1]
 
 def randomword(length):
   return ''.join(random.choice(string.lowercase) for i in range(length))
-  
+
 def IP_address():
         try:
             s = socket.socket(socket_family, socket.SOCK_DGRAM)
@@ -58,7 +49,7 @@ def getCPUtemperature():
     #return(res.replace("temp=","").replace("'C\n",""))
     res = os.popen('sensors -f').readline()
     return (res)
-    
+
 # - start timing
 starttime = datetime.datetime.now().strftime('%m/%d/%Y %H:%M:%S')
 start = time.time()
@@ -80,14 +71,14 @@ def callback(bt_addr, rssi, packet, additional_info):
   f = open('/sys/class/thermal/thermal_zone0/temp', 'r')
   l = f.readline()
   ctemp = 1.0 * float(l)/1000
-    
+
   row['cputemp1'] = round(ctemp,2)
   row['bt_addr'] = bt_addr
-  row['rssi'] = rssi  
+  row['rssi'] = rssi
   row['id'] = telemetry.identifier
   row['magnetic_fieldx'] =  telemetry_b.magnetic_field[0]
   row['magnetic_fieldy'] =  telemetry_b.magnetic_field[1]
-  row['magnetic_fieldz'] =  telemetry_b.magnetic_field[2] 
+  row['magnetic_fieldz'] =  telemetry_b.magnetic_field[2]
   row['temperature'] = telemetry_b.temperature
   row['battery'] =  telemetry_b.battery_level
   row['id'] = telemetry.identifier
@@ -115,9 +106,9 @@ def callback(bt_addr, rssi, packet, additional_info):
   fh = open("/opt/demo/logs/estimote.log", "a")
   fh.writelines('{0}\n'.format(json_string))
   fh.close
-         
+
 # scan for all Estimote telemetry packets from a specific beacon
-scanner = BeaconScanner(callback, 
+scanner = BeaconScanner(callback,
     packet_filter=[EstimoteTelemetryFrameA, EstimoteTelemetryFrameB]
 )
 scanner.start()
