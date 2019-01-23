@@ -96,6 +96,7 @@ def callback(bt_addr, rssi, packet, additional_info):
   row['diskusage'] = "{:.1f}".format(float(usage.free) / 1024 / 1024)
   row['memory'] = psutil.virtual_memory().percent
   row['uuid'] = str(uuid2)
+  row['estimoteid'] = additional_info['identifier']
   row['host'] = os.uname()[1]
   row['cputemp'] = psutil.sensors_temperatures()['radeon'][0][1]
   row['ipaddress'] = ipaddress
