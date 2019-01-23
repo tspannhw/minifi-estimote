@@ -1,4 +1,4 @@
-{ "type" : "record", "name" : "estimote", "fields" : [ { "name": "estimoteid", "type": "string" }, 
+{ "type" : "record", "name" : "estimote", "fields" : [ { "name": "estimoteid", "type": ["string","null"], "default": "NA" }, 
                                                         { "name" : "battery", "type" : "int" }, 
 { "name" : "id", "type" : "string", "doc" : "Type inferred from '\"47a038d5eb032640\"'" }, 
 { "name" : "magnetic_fieldz", "type" : "double", "doc" : "Type inferred from '-0.1484375'" }, 
